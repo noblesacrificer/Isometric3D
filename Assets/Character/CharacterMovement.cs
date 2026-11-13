@@ -2,6 +2,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Numerics;
 
 public class CharacterMovement : UnityEngine.MonoBehaviour
 {
@@ -11,7 +12,9 @@ public class CharacterMovement : UnityEngine.MonoBehaviour
     public float maxCA;
 
     [Header("Movement")]
-    public float moveSpeed = 5f;
+    public float walkSpeed = 3f;
+    public float diveMovingSpeed = 7f;
+    private float moveSpeed = 3f;
     public float runSpeed = 8f;
     public float rotationSpeed = 12f;
 
@@ -83,6 +86,7 @@ public class CharacterMovement : UnityEngine.MonoBehaviour
 
     void Start()
     {
+        moveSpeed = walkSpeed;
         sceneVolume.profile.TryGet(out chromaticAberration);
         fallingFOV = fallFOV;
         terminalVelocity = MaxSpeed;
@@ -118,6 +122,11 @@ public class CharacterMovement : UnityEngine.MonoBehaviour
     void Update()
     {
         if (UnityEngine.InputSystem.Keyboard.current == null) return;
+
+        if (moveInput == UnityEngine.Vector2.zero)
+        {
+            rb.angularVelocity = UnityEngine.Vector3.zero;
+        }
 
         var keyboard = UnityEngine.InputSystem.Keyboard.current;
         var mouse = UnityEngine.InputSystem.Mouse.current;
@@ -398,6 +407,15 @@ public class CharacterMovement : UnityEngine.MonoBehaviour
                 );
 
             rb.MoveRotation(smoothRotation);
+        }
+
+        if(isDiving)
+        {
+            moveSpeed = diveMovingSpeed;
+        }
+        else
+        {
+            moveSpeed = walkSpeed;
         }
     }
 

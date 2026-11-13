@@ -6,6 +6,7 @@ public class CameraController : UnityEngine.MonoBehaviour
 {
     [Header("Target")]
     public UnityEngine.Transform target;
+    public Animator playerAnimator;
 
     [Header("Camera Position")]
     public float cameraDistance = 6f;
@@ -44,11 +45,13 @@ public class CameraController : UnityEngine.MonoBehaviour
         if (Keyboard.current.rightArrowKey.isPressed)
             horizontal += 1f;
 
-        if (Keyboard.current.upArrowKey.isPressed)
+        if (Keyboard.current.upArrowKey.isPressed && !playerAnimator.GetBool("Diving"))
             vertical += 1f;
 
-        if (Keyboard.current.downArrowKey.isPressed)
+        if (Keyboard.current.downArrowKey.isPressed && !playerAnimator.GetBool("Diving"))
             vertical -= 1f;
+        if (playerAnimator.GetBool("Diving"))
+            vertical = minPitch + 10;
 
         yaw += horizontal * rotationSpeed *
                UnityEngine.Time.deltaTime;
